@@ -93,3 +93,60 @@ def parse_problem(objetive, restrictions, maximize):
     return [val_z,matriz,var_z]
 
 #print(parse_problem("30x1 + 100x2",["x1 + x2 <= 7","4x1 + 10x2 <= 40","10x1 >= 30"],True))
+
+
+# [30.0, 100.0, 0, 0, 0, -100000.0],
+#       [	[1, 1, 1, 0, 0, 0, 7.0],
+# 			[4.0, 10.0, 0, 1, 0, 0, 40.0],
+# 			[10.0, 0, 0, 0, -1, 1, 30.0]	],
+#       	['x1', 'x2', 's1', 's2', 's3', 'a3'],
+# 	True
+
+
+def calcularZ_ZJ(Z_array, Z_ZJ_array):
+	for i in range(len(Z_ZJ_array)):
+		Z_ZJ_array[i] =  Z_array[i]-Z_ZJ_array[i] 
+	return Z_ZJ_array
+
+def calcularZj(matriz, cb):
+	return ""
+
+def simplex(objective, restrictions, variables, maximize):
+	cb_array = []
+	var_array = []
+	Zj_array = []
+	Z_ZJ_array = []
+	
+	valor_objetivo = 0
+
+	for i in range(len(restrictions)):
+		cb_array.append(0)
+
+	for i in range(len(variables)):
+		Zj_array.append(0)
+		Z_ZJ_array.append(0)
+
+	for i in range(2, len(variables)):
+		var_array.append(variables[i])
+
+	
+
+	return ""
+
+# print( simplex( [30.0, 100.0, 0, 0, 0, -100000.0],
+# 				[	[1, 1, 1, 0, 0, 0, 7.0],
+# 					[4.0, 10.0, 0, 1, 0, 0, 40.0],
+# 					[10.0, 0, 0, 0, -1, 1, 30.0]	],
+#       			['x1', 'x2', 's1', 's2', 's3', 'a3'],
+# 	  			True
+# ))
+	
+
+print( simplex (  [0.65, 0.45, 0, 0, 0], 
+					[[2.0, 3.0, 1, 0, 0, 400.0], 
+					[3.0, 1.5, 0, 1, 0, 300.0], 
+					[1.0, 0, 0, 0, 1, 90.0]], 
+					['x1', 'x2', 's1', 's2', 's3'], 
+					True
+				) 
+)
