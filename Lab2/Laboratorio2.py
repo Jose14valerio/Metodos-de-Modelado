@@ -50,3 +50,38 @@ class CongruentialGenerator:
 				b_primo= is_prime(b)
 		a =  self.random() * m  + 1
 		return a,b,m 
+
+	def generar_mazo(self):
+		mazo = []
+		for i in ["corazon", "espada", "diamante", "trebol"]:
+			for j in [1,2,3,4,5,6,7,8,9,10,11,12,13]:
+				card = []
+				card.append(i)
+				card.append(j)
+				mazo.append(card)
+		return mazo
+
+	def mismo_palo(self, mano):
+		# ["corazon", "espada", "diamante", "trebol"]
+		contador = 0
+		palo = mano[contador][0]
+		mismo_palo = False 
+		while contador < 5:
+			if mano[contador][0] == palo:
+				mismo_palo = True
+				contador += 1
+			else:
+				mismo_palo = False
+				contador = 6
+
+		return mismo_palo
+
+	def escalera(self, mano):
+		return
+
+	def compare_hands(self, player, opponent):
+
+		return
+
+def simulate(initial_cards, rolls, generator):
+	return
