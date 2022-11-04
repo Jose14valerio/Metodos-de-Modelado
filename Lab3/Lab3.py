@@ -131,19 +131,15 @@ class pokeGenerador:
         return probabilidad
 
 
-        
-
-
-
-nombres=pokeGenerador.loadwords("pokemon.csv")
+nombres = pokeGenerador.loadwords("pokemon.csv")
 
 tupla = pokeGenerador.create_model(nombres,3)
 
-nueva_palabra= pokeGenerador.generate_word(tupla,21)
+nueva_palabra = pokeGenerador.generate_word(tupla,15)
 
-proba = pokeGenerador.get_probability(tupla,"Espeon")
+proba = pokeGenerador.get_probability(tupla,"Gible")
 
-print (nueva_palabra)
+print(nueva_palabra)
 
 """
 8.a Entre más grande sea la N, la secuencias son más grandes y por ende al juntarlas es más probable encontrar un nombre con sentido
@@ -155,13 +151,13 @@ tupla = pokeGenerador.create_model(nombres,3)
 
 nueva_palabra= pokeGenerador.generate_word(tupla,21)
 
-Incad n=2 seed=13
+Xat n=2 seed=20
 
-TypeNull n=3 seed=33
+Regislash n=3 seed=9
 
-Fla n=2 seed=2
+Bar n=2 seed=2
 
-Dusken n=3 seed=22
+Gible n=3 seed=15
 
 8.c Para formar una palabra la secuencia siguente depende directamente de la probabilidad que tiene de relacionarse con la secuencia anterior 
 (exceptuando el caso inicial que es aleatorio)
