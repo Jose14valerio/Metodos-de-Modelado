@@ -98,17 +98,65 @@ class Queue:
 				clientes_esperando.append(cliente)
 				clientes_sistema += 1
 				initial_time += lambd
-
-
-			# Genera evento que llega cliente (LC)
+				
+			# Genera evento que llega cliente (NC)
+			evento = event("NC", initial_time)
+			cola_eventos.append(evento)
 
 			clientes_llegados += 1
-
+			
 			# En algún momento Se verifica el evento siguiente
-				# Si LC no lo han atendido (sigue esperando)
-					# Se suma el tiempo
-				# Si TA se pone a atender 
-					# se genera un nuevo LC si no se ha cerrado 
+			eventos = 0
+			prox_evento = event("NA", sys.maxsize)
+			while (eventos < len(cola_eventos)):
+				if(cola_eventos[eventos].proximidad_evento < prox_evento.proximidad_evento):
+					prox_evento = cola_eventos[eventos]
+				eventos += 1
+			# Si NC no lo han atendido (sigue esperando)
+				# Se suma el tiempo
+			# Si TA se pone a atender 
+				# se genera un nuevo NC si no se ha cerrado
+			servidor = 0
+			encontrado = False
+			atendido = False
+			if (prox_evento.tipo_evento == "NC"):
+				while (servidor < len(servidores) and encontrado == False):
+					if (servidores[servidor].ocupado == False):
+						encontrado = True
+						servidores[servidor].ocupado = True
+						index = cola_eventos.index(prox_evento)
+						cola_eventos.remove(cola_eventos[index])
+						evento = event("TA", clientes_esperando[0].salida)
+						atendido = True
+				if(atendido == False):
+					initial_time += clientes_esperando[0].llegada
+			elif(prox_evento.tipo_evento == "TA"):
+				clientes_atendidos.append(clientes_esperando[0])
+				servidores[servidor].ocupado = False
+				initial_time += clientes_esperando[0].salida
+				clientes_esperando.remove(clientes_esperando[0])
+				clientes_sistema -= 1
+				if(initial_time < time_limit):
+					if(self.arrival == "markovian"):
+						lambd = markovian(self.calculate_lamdb(clientes_sistema))
+						mu = markovian(self.calculate_mu(clientes_sistema))
+						cliente = self.new_client(lambd,mu)
+						clientes_esperando.append(cliente)
+						clientes_sistema += 1
+						initial_time += lambd
+					else:
+						lambd = degenerate(self.calculate_lamdb(clientes_sistema))
+						mu = degenerate(self.calculate_mu(clientes_sistema))
+						cliente = self.new_client(lambd,mu)
+						clientes_esperando.append(cliente)
+						clientes_sistema += 1
+						initial_time += lambd
+					# Genera evento que llega cliente (NC)
+					evento = event("NC", initial_time)
+					cola_eventos.append(evento)
+
+					clientes_llegados += 1
+					
 
 			# Para atender el servidor tiene que estar desocupado
 			# si LC y un servidor está D 
