@@ -84,14 +84,14 @@ class Queue:
 		# Se puede atender clientes mientras la cola esté abierta (no se ha cerrado)
 		while initial_time < time_limit:
 			# Llega un cliente y lo pongo a esperar
-			if(self.arrival == "markovian"):
+			if(self.arrival == "markovian" and clientes_sistema < self.lmax):
 				lambd = markovian(self.calculate_lamdb(clientes_sistema))
 				mu = markovian(self.calculate_mu(clientes_sistema))
 				cliente = self.new_client(lambd,mu)
 				clientes_esperando.append(cliente)
 				clientes_sistema += 1
 				initial_time += lambd
-			else:
+			elif(self.arrival == "degenerate" and clientes_sistema < self.lmax):
 				lambd = degenerate(self.calculate_lamdb(clientes_sistema))
 				mu = degenerate(self.calculate_mu(clientes_sistema))
 				cliente = self.new_client(lambd,mu)
@@ -172,7 +172,7 @@ class Queue:
 			
 			
 #self, lmax, s, arrival, lambd, service, mu):
-cola = Queue(15, 1, "markovian","64-n**1.5", "markovian","5+3n")
+cola = Queue(15, 3, "markovian","64-n**1.5", "markovian","5+3n")
 cola.simulation(1000,0,0)
 
 
