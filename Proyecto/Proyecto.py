@@ -127,7 +127,9 @@ class Queue:
 						index = cola_eventos.index(prox_evento)
 						cola_eventos.remove(cola_eventos[index])
 						evento = event("TA", clientes_esperando[0].salida)
+						cola_eventos.append(evento)
 						atendido = True
+						initial_time += clientes_esperando[0].atencion 
 				if(atendido == False):
 					initial_time += clientes_esperando[0].llegada
 			elif(prox_evento.tipo_evento == "TA"):
@@ -135,8 +137,8 @@ class Queue:
 				servidores[servidor].ocupado = False
 				initial_time += clientes_esperando[0].salida
 				clientes_esperando.remove(clientes_esperando[0])
-				clientes_sistema -= 1
-				if(initial_time < time_limit):
+				
+				if(initial_time < time_limit and clientes_sistema < self.lmax):
 					if(self.arrival == "markovian"):
 						lambd = markovian(self.calculate_lamdb(clientes_sistema))
 						mu = markovian(self.calculate_mu(clientes_sistema))
@@ -156,6 +158,8 @@ class Queue:
 					cola_eventos.append(evento)
 
 					clientes_llegados += 1
+				
+				clientes_sistema -= 1
 					
 
 			# Para atender el servidor tiene que estar desocupado
