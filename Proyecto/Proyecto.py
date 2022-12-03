@@ -30,6 +30,12 @@ class Server:
         self.ocupado = ocupado
         self.lurk_time = lurk_time
 
+
+class event:
+    def __init__(self, tipo_evento, proximidad_evento):
+        self.tipo_evento = tipo_evento
+        self.proximidad_evento = proximidad_evento
+
     
 class Queue:
     def __init__(self, lmax, s, arrival, lambd, service, mu):
@@ -39,6 +45,14 @@ class Queue:
         self.lambd = lambd
         self.sevice = service
         self.mu = mu
+
+    def calculate_lamdb(self, n):
+        lambd = self.lambd.replace("n", str(n)) 
+        return eval(lambd)
+
+    def calculate_mu(self, n):
+        mu = self.mu.replace("n", str(n)) 
+        return eval(mu)
     
     def simulation(self, time_limit, initial_clients, maximun_arrivals):
         initial_time = 0
@@ -47,16 +61,41 @@ class Queue:
         clientes_esperando = []
         clientes_atendidos = []
         servidores = []
-        clientes_sistema = 0
+        clientes_sistema = initial_clients
+        clientes_llegados = 0
+        if (maximun_arrivals == 0):
+            maximun_arrivals = max
 
         servers = 0
-        while servers < Queue.s:
+        while servers < self.s:
             serv = Server(False,0)
             servidores.append(serv)
             servers = servers+1 
 
         while initial_time < time_limit:
-            initial_time = initial_time + markovian(Queue.lambd)
-            #Tipos de evento Llegada de cliente (NC), Cliente en atención (CA), salida de cliente (SC)
+            if(clientes_llegados < maximun_arrivals and clientes_sistema < self.lmax):
+                if(self.arrival == "markovian"):
+                    evento = event("NC", markovian(self.calculate_lamdb(clientes_sistema)))
+                    cola_eventos.append(evento)
+                    cliente = Client(markovian(self.calculate_lamdb(clientes_sistema)), markovian(self.calculate_mu(clientes_sistema))-markovian(self.calculate_lamdb(clientes_sistema)), markovian(self.calculate_mu(clientes_sistema)))
+                    clientes_esperando.append(cliente)
+                    clientes_sistema += 1
+                    initial_time += markovian(self.calculate_lamdb(clientes_sistema))
+                else: 
+                    evento = event("NC", degenerate(self.calculate_lamdb(clientes_sistema)))
+                    cola_eventos.append(evento)
+                    cliente = Client(degenerate(self.calculate_lamdb(clientes_sistema)), degenerate(self.calculate_mu(clientes_sistema))-degenerate(self.calculate_lamdb(clientes_sistema)), self.calculate_mu(clientes_sistema))
+                    clientes_esperando.append(cliente)
+                    clientes_sistema += 1
+                    initial_time += degenerate(self.calculate_lamdb(clientes_sistema))
+            elif clientes_sistema == self.lmax:
+                clientes_perdidos += 1
+
+            
 
 
+
+
+
+
+        
