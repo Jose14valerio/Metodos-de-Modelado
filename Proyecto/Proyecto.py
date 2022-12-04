@@ -176,6 +176,7 @@ class Queue:
 				# el cliente sale del sistema 
 				
 			# Si todos estan ocupados, se pone el cliente a esperar
+		# 
 		print("Clientes atendidos: " + str(len(clientes_atendidos)))
 		print("Clientes perdidos: " + str(clientes_llegados-len(clientes_atendidos)))
 		i = 0
@@ -186,6 +187,13 @@ class Queue:
 		tiempo_atencion = tiempo_atencion/len(clientes_atendidos) 
 		print("El tiempo promedio de espera fue de " + str(tiempo_atencion))
 
+		i = 0
+		tiempo_salida = 0
+		while (i < len(clientes_atendidos)): 
+			tiempo_salida += clientes_atendidos[i].salida
+			i += 1
+		tiempo_salida = tiempo_salida/len(clientes_atendidos) 
+		print("El tiempo promedio de atencion fue de " + str(tiempo_salida))
 			
 #self, lmax, s, arrival, lambd, service, mu):
 cola = Queue(15, 1, "markovian","64-n**1.5", "markovian","5+3n")
