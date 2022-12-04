@@ -62,7 +62,6 @@ class Queue:
 	def simulation(self, time_limit, initial_clients, maximum_arrivals):
 		initial_time = 0
 		cola_eventos = []
-		clientes_perdidos = 0
 		clientes_esperando = []
 		clientes_atendidos = []
 		servidores = []
@@ -83,6 +82,8 @@ class Queue:
 
 		# Se puede atender clientes mientras la cola esté abierta (no se ha cerrado)
 		while initial_time < time_limit:
+			print(initial_time)
+			#print(initial_time)
 			# Llega un cliente y lo pongo a esperar
 			if(self.arrival == "markovian" and clientes_sistema < self.lmax):
 				lambd = markovian(self.calculate_lamdb(clientes_sistema))
@@ -137,6 +138,7 @@ class Queue:
 				servidores[servidor].ocupado = False
 				initial_time += clientes_esperando[0].salida
 				clientes_esperando.remove(clientes_esperando[0])
+				clientes_sistema -= 1
 				
 				if(initial_time < time_limit and clientes_sistema < self.lmax):
 					if(self.arrival == "markovian"):
@@ -159,7 +161,7 @@ class Queue:
 
 					clientes_llegados += 1
 				
-				clientes_sistema -= 1
+				
 					
 
 			# Para atender el servidor tiene que estar desocupado
@@ -169,10 +171,19 @@ class Queue:
 				# el cliente sale del sistema 
 				
 			# Si todos estan ocupados, se pone el cliente a esperar
-			
+		print("Clientes atendidos: " + str(len(clientes_atendidos)))
+		print("Clientes perdidos: " + str(clientes_llegados-len(clientes_atendidos)))
+		i = 0
+		tiempo_atencion = 0
+		while (i < len(clientes_atendidos)): 
+			tiempo_atencion += clientes_atendidos[i].atencion
+			i += 1
+		tiempo_atencion = tiempo_atencion/len(clientes_atendidos) 
+		print("El tiempo promedio de espera fue de " + str(tiempo_atencion))
+
 			
 #self, lmax, s, arrival, lambd, service, mu):
-cola = Queue(15, 3, "markovian","64-n**1.5", "markovian","5+3n")
+cola = Queue(15, 1, "markovian","64-n**1.5", "markovian","5+3n")
 cola.simulation(1000,0,0)
 
 
