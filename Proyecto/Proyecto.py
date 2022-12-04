@@ -76,7 +76,6 @@ class Queue:
 			maximum_arrivals = sys.maxsize
 
 
-		# Crean los servidores
 		servers = 0
 		while servers < self.s:
 			serv = Server(False,0)
@@ -85,11 +84,7 @@ class Queue:
 
 		lambd = 0
 
-		# Se puede atender clientes mientras la cola esté abierta (no se ha cerrado)
 		while initial_time < time_limit:
-			print(initial_time)
-			#print(initial_time)
-			# Llega un cliente y lo pongo a esperar
 			if(self.arrival == "markovian" and clientes_sistema < self.lmax):
 				lambd = markovian(self.calculate_lamdb(clientes_sistema))
 				mu = markovian(self.calculate_mu(clientes_sistema))
@@ -105,23 +100,17 @@ class Queue:
 				clientes_sistema += 1
 				initial_time += lambd
 				
-			# Genera evento que llega cliente (NC)
 			evento = event("NC", initial_time)
 			cola_eventos.append(evento)
 
 			clientes_llegados += 1
-			
-			# En algún momento Se verifica el evento siguiente
+
 			eventos = 0
 			prox_evento = event("NA", sys.maxsize)
 			while (eventos < len(cola_eventos)):
 				if(cola_eventos[eventos].proximidad_evento < prox_evento.proximidad_evento):
 					prox_evento = cola_eventos[eventos]
 				eventos += 1
-			# Si NC no lo han atendido (sigue esperando)
-				# Se suma el tiempo
-			# Si TA se pone a atender 
-				# se genera un nuevo NC si no se ha cerrado
 			servidor = 0
 			encontrado = False
 			atendido = False
@@ -130,6 +119,7 @@ class Queue:
 					if (servidores[servidor].ocupado == False):
 						encontrado = True
 						servidores[servidor].ocupado = True
+						servidores[servidor].lurk_time += clientes_esperando[0].llegada
 						index = cola_eventos.index(prox_evento)
 						cola_eventos.remove(cola_eventos[index])
 						evento = event("TA", clientes_esperando[0].salida)
@@ -160,23 +150,10 @@ class Queue:
 						clientes_esperando.append(cliente)
 						clientes_sistema += 1
 						initial_time += lambd
-					# Genera evento que llega cliente (NC)
 					evento = event("NC", initial_time)
 					cola_eventos.append(evento)
 
 					clientes_llegados += 1
-				
-				
-					
-
-			# Para atender el servidor tiene que estar desocupado
-			# si LC y un servidor está D 
-				# el servidor empieza a atender al cliente
-				# se genera evento TA con el tiempo y el servidor que lo atendió 
-				# el cliente sale del sistema 
-				
-			# Si todos estan ocupados, se pone el cliente a esperar
-		# 
 		print("Clientes atendidos: " + str(len(clientes_atendidos)))
 		print("Clientes perdidos: " + str(clientes_llegados-len(clientes_atendidos)))
 		i = 0
@@ -194,8 +171,15 @@ class Queue:
 			i += 1
 		tiempo_salida = tiempo_salida/len(clientes_atendidos) 
 		print("El tiempo promedio de atencion fue de " + str(tiempo_salida))
+
+		i = 0 
+		ocio = 0
+		while (i < len(servidores)): 
+			ocio += servidores[i].lurk_time
+			i += 1
+		ocio = ocio/len(servidores) 
+		print("El tiempo ocio promedio fue de: " + str(ocio))
 			
-#self, lmax, s, arrival, lambd, service, mu):
 cola = Queue(15, 1, "markovian","64-n**1.5", "markovian","5+3n")
 cola.simulation(1000,0,0)
 
