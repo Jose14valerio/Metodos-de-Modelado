@@ -56,7 +56,12 @@ class Queue:
 		return eval(mu)
 	
 	def new_client(self, lambd, mu):
-		cliente = Client(lambd, mu-lambd, mu)
+		espera = 0
+		if mu > lambd:
+			espera = mu-lambd 
+		else: 
+			espera = lambd-mu
+		cliente = Client(lambd, espera, mu)
 		return cliente
 
 	def simulation(self, time_limit, initial_clients, maximum_arrivals):
